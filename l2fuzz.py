@@ -29,7 +29,8 @@ def bluetooth_reset():
 
 def bluetooth_class_of_device(device_class):
     # https://github.com/mikeryan/btclassify.git
-
+    print(type(device_class))
+    print(device_class)
     class_string = device_class
 
     m = re.match('(0x)?([0-9A-Fa-f]{6})', class_string)
@@ -214,7 +215,6 @@ def bluetooth_classic_scan():
         print("\n\tTarget Bluetooth Device List")
         print("\t[No.]\t[BT address]\t\t[Device name]\t\t[Device Class]\t\t[OUI]")
         for addr, name, device_class in nearby_devices:
-            print(device_class)
             device_class = bluetooth_class_of_device(hex(device_class))
             oui = OuiLookup().query(addr)
             print("\t%02d.\t%s\t%s\t\t%s(%s)\t%s" % (i, addr, name, device_class['major'], device_class['minor'], list(oui[0].values())[0]))                
@@ -296,16 +296,16 @@ if __name__== "__main__":
     target_profile_port = target_service['port']
     print(target_profile)
 
-    # print("\n===================Test Informatoin===================")
-    # print(json.dumps(test_info, ensure_ascii=False, indent="\t"))
-    # print("======================================================\n")
-    # #
-    # #
-    # # Protocol fuzzing
-    # if(target_protocol == "L2CAP"):
-    #     l2cap_fuzzing(target_addr, target_profile, target_profile_port, test_info)
-    # else:
-    #     print("Not Supported")
+    print("\n===================Test Informatoin===================")
+    print(json.dumps(test_info, ensure_ascii=False, indent="\t"))
+    print("======================================================\n")
+    #
+    #
+    # Protocol fuzzing
+    if(target_protocol == "L2CAP"):
+        l2cap_fuzzing(target_addr, target_profile, target_profile_port, test_info)
+    else:
+        print("Not Supported")
 
 
    
