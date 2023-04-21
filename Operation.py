@@ -232,10 +232,6 @@ def bluetooth_services_and_protocols_search(bt_addr):
                 print("\t%02d.\t0x%s\t\t%s\t\t%d\t\t%s" % (i, serv['profiles'][0][0], serv['protocol'], serv['port'], serv['name']))
                 i += 1
 
-def fuzz(target_addr, target_profile, target_profile_port):
-    l2cap_fuzzing(target_addr, target_profile, target_profile_port)
-
-
 def main():
     parser = argparse.ArgumentParser(
         usage='sudo python3 Operation.py -fun scan -mac 3C:28:6D:29:5A:A0 -iface hci0'
@@ -268,16 +264,15 @@ def main():
             show_class_of_device(args.cod)
     if args.fun == 'fuzz':
         """对目标设备开启模糊测试"""
-        target_addr = "3C:28:6D:29:5A:A0"
-        target_profile = "Advanced Audio Source"
-        target_profile_port = 25
+        if not args.mac:
+            parser.error('sudo python3 Operation.py -fun fuzz -mac 3C:28:6D:29:5A:A0')
         if args.mac:
             target_addr = args.mac
             protocol_select = services_and_protocols_search(target_addr)
             target_profile = protocol_select['service']
             target_profile_port = protocol_select['port']
-            fuzz(target_addr, target_profile, target_profile_port)
-        fuzz(target_addr, target_profile, target_profile_port)
+            if protocol_select['protocol'] == 'L2CAP':
+                l2cap_fuzzing(target_addr, target_profile, target_profile_port)
 
 
 if __name__== "__main__":

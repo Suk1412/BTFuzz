@@ -153,7 +153,6 @@ def send_pkt(bt_addr, sock, pkt, cmd_code, state):
     global pkt_cnt
     global crash_cnt
     pkt_cnt += 1
-    print(f"pkt_cnt:{pkt_cnt}")
     sock.send(pkt)
     # Reset Socket
     sock = BluetoothL2CAPSocket(bt_addr)
@@ -161,6 +160,9 @@ def send_pkt(bt_addr, sock, pkt, cmd_code, state):
 
 
 def connection_state_fuzzing(bt_addr, sock, state_machine):
+    """
+        l2cap 链接状态模糊测试
+    """
     iteration = 2500
     for i in range(0, iteration):
         cmd_code = 0x02

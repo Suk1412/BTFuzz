@@ -38,7 +38,5 @@ def services_and_protocols_search(bt_addr):
     test_info['protocol'] = serv_chosen['protocol']
     test_info['port'] = serv_chosen['port']
     test_info['service'] = serv_chosen['name']
-    print(test_info['service'])
-    print(test_info['port'])
     return test_info
 
