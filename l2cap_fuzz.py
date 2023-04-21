@@ -154,45 +154,23 @@ def send_pkt(bt_addr, sock, pkt, cmd_code, state):
     global crash_cnt
     pkt_cnt += 1
     print(f"pkt_cnt:{pkt_cnt}")
-    pkt_info = ""
     sock.send(pkt)
-    # pkt_info = {}
-    # pkt_info["no"] = pkt_cnt
-    # pkt_info["protocol"] = "L2CAP"
-    # pkt_info["sended_time"] = str(datetime.now())
-    # pkt_info["payload"] = log_pkt(pkt)
-    # pkt_info["crash"] = "n"
-    # pkt_info["l2cap_state"] = state
-
     # Reset Socket
     sock = BluetoothL2CAPSocket(bt_addr)
-    return sock, pkt_info
+    return sock
 
 
-def connection_state_fuzzing(bt_addr, sock, state_machine, packet_info):
+def connection_state_fuzzing(bt_addr, sock, state_machine):
     iteration = 2500
     for i in range(0, iteration):
         cmd_code = 0x02
-        print(cmd_code)
         pkt = L2CAP_CmdHdr(code=cmd_code)/new_L2CAP_ConnReq(psm=random_psm())/garbage_value(garbage=randrange(0x0000, 0x10000))
-
-        sock, pkt_info = send_pkt(bt_addr, sock, pkt, cmd_code, state_machine.current_state.name)
-        if pkt_info == "":
-            pass
-        else:
-            packet_info["packet"].append(pkt_info)
-
+        sock = send_pkt(bt_addr, sock, pkt, cmd_code, state_machine.current_state.name)
         state_machine.closed_to_w_conn()
 
         cmd_code = 0x03
-        print(cmd_code)
         pkt = L2CAP_CmdHdr(code=cmd_code)/new_L2CAP_ConnResp(dcid=randrange(0x0040, 0x10000), scid=randrange(0x0040, 0x10000))/garbage_value(garbage=randrange(0x0000, 0x10000))
-        sock, pkt_info = send_pkt(bt_addr, sock, pkt, cmd_code, state_machine.current_state.name)
-        if pkt_info == "":
-            pass
-        else:
-            packet_info["packet"].append(pkt_info)
-
+        sock = send_pkt(bt_addr, sock, pkt, cmd_code, state_machine.current_state.name)
         state_machine.w_conn_to_closed()
 
 def l2cap_fuzzing(bt_addr, profile, port):
@@ -207,9 +185,9 @@ def l2cap_fuzzing(bt_addr, profile, port):
                 connection_state_fuzzing(bt_addr, sock, state_machine)
 
         except Exception as e:
-            print(f"[!] Error Message :{e}")
+            print(f"[!] Error Message {e}")
 
         except KeyboardInterrupt as k:
-            print(f"[!] Fuzzing Stopped : {k}")
+            print(f"[!] Fuzzing Stopped {k}")
 
 
