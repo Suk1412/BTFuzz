@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 # -*- encoding: utf-8 -*-
-import json
 from collections import OrderedDict
 from datetime import datetime
-
+from random import randrange
 from scapy.compat import raw
+from state_machine import Event
 from statemachine import StateMachine, State
 from scapy.layers.bluetooth import BluetoothL2CAPSocket, L2CAP_CmdHdr
 
-from l2cap_fuzzer import new_L2CAP_ConnReq, random_psm, garbage_value, randrange, new_L2CAP_ConnResp
+from bt_layer import new_L2CAP_ConnReq, random_psm, garbage_value, new_L2CAP_ConnResp
 
 pkt_cnt = 0
 crash_cnt = 0
@@ -34,6 +34,9 @@ class l2cap_state_machine(StateMachine):
     wait_connect_state = State('Wait Connect State')
     wait_connect_rsp_state = State('Wait Connect Rsp State')
     wait_disconnect_state = State('Wait Disconnect State')
+
+
+    # closed_to_w_conn = Event(from_states=closed_state, to_state=wait_connect_state)
 
     # Optional States (Alternative MAC/PHY enabled operation)
     wait_create_state = State('Wait Create State')
@@ -71,6 +74,7 @@ class l2cap_state_machine(StateMachine):
 
     # from closed_state
     closed_to_w_conn = closed_state.to(wait_connect_state)
+
     closed_to_w_conf = closed_state.to(wait_config_state)
     closed_to_w_conn_rsp = closed_state.to(wait_connect_rsp_state)
     closed_to_w_create = closed_state.to(wait_create_state)
@@ -167,29 +171,28 @@ def connection_state_fuzzing(bt_addr, sock, state_machine):
     for i in range(0, iteration):
         cmd_code = 0x02
         pkt = L2CAP_CmdHdr(code=cmd_code)/new_L2CAP_ConnReq(psm=random_psm())/garbage_value(garbage=randrange(0x0000, 0x10000))
+        print("1", state_machine.current_state.name)
         sock = send_pkt(bt_addr, sock, pkt, cmd_code, state_machine.current_state.name)
         state_machine.closed_to_w_conn()
 
+        print("2", state_machine.current_state.name)
         cmd_code = 0x03
         pkt = L2CAP_CmdHdr(code=cmd_code)/new_L2CAP_ConnResp(dcid=randrange(0x0040, 0x10000), scid=randrange(0x0040, 0x10000))/garbage_value(garbage=randrange(0x0000, 0x10000))
         sock = send_pkt(bt_addr, sock, pkt, cmd_code, state_machine.current_state.name)
         state_machine.w_conn_to_closed()
 
+
 def l2cap_fuzzing(bt_addr, profile, port):
         print("Start Fuzzing...")
         sock = BluetoothL2CAPSocket(bt_addr)
         state_machine = l2cap_state_machine()
-
         try:
             while 1:
                 print("[+] Tested %d packets" % (pkt_cnt))
                 # Connection State Fuzzing (1/2) + closed
                 connection_state_fuzzing(bt_addr, sock, state_machine)
-
         except Exception as e:
             print(f"[!] Error Message {e}")
-
         except KeyboardInterrupt as k:
             print(f"[!] Fuzzing Stopped {k}")
-
 

@@ -265,7 +265,7 @@ def main():
     if args.fun == 'fuzz':
         """对目标设备开启模糊测试"""
         if not args.mac:
-            parser.error('sudo python3 Operation.py -fun fuzz -mac 3C:28:6D:29:5A:A0')
+            parser.error('sudo python3 Operation.py -fun fuzz -mac 22:22:C5:21:D5:B3')
         if args.mac:
             target_addr = args.mac
             protocol_select = services_and_protocols_search(target_addr)
