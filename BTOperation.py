@@ -299,6 +299,9 @@ Capture interface:
                 if args.example == 'shift_state_fuzzing':
                     from case.shift_state_fuzzing import run
                     run(target_addr)
+                if args.example == 'disconnection_state_fuzzing':
+                    from case.disconnection_state_fuzzing import run
+                    run(target_addr)
 
 if __name__== "__main__":
     main()

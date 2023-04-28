@@ -85,7 +85,7 @@ class L2CAP_Create_Channel_Response(Packet):
 class L2CAP_Move_Channel_Request(Packet):
     name = "L2CAP Move Channel Request"
     fields_desc = [LEShortField("icid", 0),
-                   ByteField("dest_controller_id", 0),
+                   ByteField("cid", 0),
                    ]  # 0: move to Bluetooth BR/EDR, 1: move to wifi 802.11
 
 
