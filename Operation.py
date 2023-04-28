@@ -5,7 +5,6 @@ import sys
 import bluetooth
 from OuiLookup import OuiLookup
 from bluepy.btle import Scanner
-
 from Bluetooth_Class_of_Device import show_class_of_device
 from Bluetooth_Services_And_Protocols_Search import services_and_protocols_search
 from l2cap_fuzz import l2cap_fuzzing
@@ -272,7 +271,10 @@ def main():
             target_profile = protocol_select['service']
             target_profile_port = protocol_select['port']
             if protocol_select['protocol'] == 'L2CAP':
+                print(target_addr,target_profile,target_profile_port)
                 l2cap_fuzzing(target_addr, target_profile, target_profile_port)
+    else:
+        parser.error('\nsudo python3 Operation.py -fun <操作>\n\tbt_scan\t经典蓝牙扫描\n\tle_scan\t低能耗蓝牙扫描\n\tsearch\t扫描目标服务\n\tcheck\t查看蓝牙CoD对应的设备类型\n\tfuzz\t对目标设备开启模糊测试')
 
 
 if __name__== "__main__":

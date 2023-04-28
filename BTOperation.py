@@ -6,9 +6,10 @@ import sys
 import bluetooth
 from OuiLookup import OuiLookup
 from bluepy.btle import Scanner
+
 from Bluetooth_Class_of_Device import show_class_of_device
 from Bluetooth_Services_And_Protocols_Search import services_and_protocols_search
-from l2cap_fuzz import l2cap_fuzzing
+# from l2cap_state import l2cap_fuzzing
 from collections import OrderedDict
 import re
 current_file = __file__
@@ -241,14 +242,13 @@ def main():
 
 
 Capture interface:
-    -f <command>, --fun <command> 
+    -f, --fun <command> 
                             bt_scan:经典蓝牙扫描         
                             le_scan:低能耗蓝牙扫描
                             check:查看class对应是什么设备
                             search:扫描目标服务
                             fuzz:对目标设备开启模糊测试         
-    -i <interface>, --iface <interface>
-                            发包蓝牙接口
+    -i, --iface <interface> 发包蓝牙接口
     -m <mac>                目标mac地址
     -c <class>              View the device type corresponding to the current class value"""
 
@@ -256,14 +256,15 @@ Capture interface:
     parser = argparse.ArgumentParser(
         usage=use_helper
     )
-    parser.add_argument('-f', '--fun', help='执行的操作')
+    parser.add_argument('-f', '--fun', required=True,help='执行的操作')
     parser.add_argument('-m', '--mac', help='Clients MAC address (fuzzer)')
     parser.add_argument('-i', '--iface', help='hciconfig')
     parser.add_argument('-c', '--cod', help='Class of Device')
+    parser.add_argument('-e', '--example', help='example')
     args = parser.parse_args()
 
 
-    if args.fun.startswith('bt_scan'):
+    if args.fun.startswith('scan'):
         bt_scan()
     if args.fun.startswith('le_scan'):
         le_scan()
@@ -286,8 +287,15 @@ Capture interface:
             target_profile = protocol_select['service']
             target_profile_port = protocol_select['port']
             if protocol_select['protocol'] == 'L2CAP':
-                l2cap_fuzzing(target_addr, target_profile, target_profile_port)
-
+                if args.example == 'connection_state_fuzzing':
+                    from case.connection_state_fuzzing import run
+                    run(target_addr)
+                if args.example == 'creation_state_fuzzing':
+                    from case.creation_state_fuzzing import run
+                    run(target_addr)
+                if args.example == 'configuration_state_fuzzing':
+                    from case.configuration_state_fuzzing import run
+                    run(target_addr, target_profile_port)
 
 if __name__== "__main__":
     main()
