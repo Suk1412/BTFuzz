@@ -3,8 +3,7 @@
 from random import randrange, randint
 from scapy.layers.bluetooth import L2CAP_CmdHdr, L2CAP_ConnReq, BluetoothL2CAPSocket, L2CAP_ConnResp, L2CAP_ConfReq, L2CAP_ConfResp
 from statemachine import StateMachine, State
-from bt_layer import L2CAP_Create_Channel_Request, L2CAP_Create_Channel_Response
-
+from bt_layer import L2CAP_Create_Channel_Request, L2CAP_Create_Channel_Response, L2CAP_Move_Channel_Request, L2CAP_Move_Channel_Confirmation_Request
 
 OUR_LOCAL_SCID = 0x40
 pkt_cnt = 0
@@ -36,6 +35,9 @@ class l2cap_state_machine(StateMachine):
     wait_create_state = State('Wait Create State')
     wait_config_state = State('Wait Config State')
 
+    wait_move_state = State('Wait Move State')
+    wait_move_confirm_state = State('Wait Move Confirm State')
+
     # Configurateion States
     wait_send_config_state = State('Wait Send Config State')
     wait_config_rsp_state = State('Wait Config Rsp State')
@@ -44,6 +46,14 @@ class l2cap_state_machine(StateMachine):
 
     # from open_state
     open_to_closed = open_state.to(closed_state)
+    open_to_w_move = open_state.to(wait_move_state)
+    open_to_w_move_confirm = open_state.to(wait_move_confirm_state)
+
+    # from wait_move_confirm_state
+    w_move_confirm_to_open = wait_move_confirm_state.to(open_state)
+
+    # from wait_move_state
+    w_move_to_w_move_confirm = wait_move_state.to(wait_move_confirm_state)
 
     # from connect_state
     w_conn_to_closed = wait_connect_state.to(closed_state)
@@ -63,6 +73,7 @@ class l2cap_state_machine(StateMachine):
     closed_to_w_conn = closed_state.to(wait_connect_state)
     closed_to_w_create = closed_state.to(wait_create_state)
     closed_to_w_conf = closed_state.to(wait_config_state)
+    closed_to_open = closed_state.to(open_state)
 
     # from wait_ind_final_rsp_state
     w_ind_final_rsp_to_w_final_rsp = wait_ind_final_rsp_state.to(wait_final_rsp_state)
@@ -76,7 +87,7 @@ class l2cap_state_machine(StateMachine):
 
 def connection_state_fuzzing(bt_addr, sock, state_machine):
     print("[+] Tested %d packets" % (pkt_cnt))
-    iteration = 25
+    iteration = 1
     for i in range(0, iteration):
         cmd_code = 0x02
         pkt = L2CAP_CmdHdr(code=cmd_code)/L2CAP_ConnReq(psm=1)/b'test'
@@ -91,7 +102,7 @@ def connection_state_fuzzing(bt_addr, sock, state_machine):
 
 def creation_state_fuzzing(bt_addr, sock, state_machine):
     print("[+] Tested %d packets" % (pkt_cnt))
-    iteration = 25
+    iteration = 1
     for i in range(0, iteration):
         cmd_code = 0x0c
         pkt = L2CAP_CmdHdr(code=cmd_code)/L2CAP_Create_Channel_Request(psm=1)/b'test'
@@ -178,7 +189,29 @@ def configuration_state_fuzzing(bt_addr, sock, state_machine, port):
 
     state_machine.open_to_closed()
 
+def shift_state_fuzzing(bt_addr,sock, state_machine):
+    print("[+] Tested %d packets" % (pkt_cnt))
+    state_machine.closed_to_open()
+    iteration = 1
+    for i in range(0,iteration):
+        cmd_code = 0x0E
+        pkt = L2CAP_CmdHdr(code=cmd_code) / L2CAP_Move_Channel_Request(dest_controller_id=0) / b"text"
+        sock = send_pkt(bt_addr, sock, pkt)
+    state_machine.open_to_w_move()
+    state_machine.w_move_to_w_move_confirm()
+    state_machine.w_move_confirm_to_open()
 
+    for i in range(0, iteration):
+        cmd_code = 0x0E
+        pkt = L2CAP_CmdHdr(code=cmd_code) / L2CAP_Move_Channel_Confirmation_Request(icid=0) / b"text"
+        sock = send_pkt(bt_addr, sock, pkt)
+
+        state_machine.open_to_w_move_confirm()
+        state_machine.w_move_confirm_to_open()
+        state_machine.open_to_closed()
+
+def disconnection_state_fuzzing():
+    pass
 
 
 

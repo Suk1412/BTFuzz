@@ -296,6 +296,9 @@ Capture interface:
                 if args.example == 'configuration_state_fuzzing':
                     from case.configuration_state_fuzzing import run
                     run(target_addr, target_profile_port)
+                if args.example == 'shift_state_fuzzing':
+                    from case.shift_state_fuzzing import run
+                    run(target_addr)
 
 if __name__== "__main__":
     main()
