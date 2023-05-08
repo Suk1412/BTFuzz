@@ -1,0 +1,33 @@
+psm     有/没有
+
+        [基于L2CAP的协议]
+0x01    有        SDP (Service Discovery Protocol)：用于在蓝牙设备之间进行服务发现，从而允许应用程序查找可以提供所需服务的设备。
+0x02    有        RFCOMM (RFCOMM)：也同时使用L2CAP协议，在蓝牙设备之间建立虚拟的串行端口连接，以便两个设备之间能够直接通过该连接发送和接收数据。
+0x0f    有        BNEP (Bluetooth Network Encapsulation Protocol)：用于允许将IP数据包封装在蓝牙数据包中进行传输，从而实现通过蓝牙网络进行互联网接入的功能。
+0x17    有        AVRCP (Audio/Video Remote Control Profile)：定义了在蓝牙设备之间控制音频和视频的通信方式。
+0x19    有        AVDTP (Audio/Video Distribution Transport Protocol)：用于在蓝牙设备之间传输音频和视频数据流。
+0x1b    有        AVCTP (Audio/Video Control Transport Protocol)：用于在蓝牙设备之间传输音频和视频的控制信息。
+        没有      HID (HID over L2CAP)：允许使用L2CAP通道在蓝牙设备之间传递人机交互设备信息。
+        没有      LOBEX (Object Exchange Protocol)：用于在蓝牙设备之间传输对象，例如照片、音乐文件等。
+
+        [基于RFCOMM的协议]
+        有        OBEX (Object Exchange Protocol)：用于在蓝牙设备之间传输对象，例如照片、音乐文件等。
+        没有      SPP (Serial Port Profile)：该协议允许两个蓝牙设备之间建立一个虚拟的串行端口连接，使得应用程序能够通过该连接发送和接收数据。
+        没有      DUN (Dial-up Networking Profile)：该协议允许将蓝牙设备作为一个拨号客户端或服务器来使用，从而实现通过蓝牙网络进行拨号上网的功能。
+        没有      HID (Human Interface Device Profile)：该协议允许蓝牙设备作为人机交互设备来使用，例如键盘、鼠标、游戏控制器等。
+        没有      HSP (Headset Profile)：该协议是HFP的一个简化版本，用于实现基本的蓝牙耳机功能。
+
+        [基于OBEX的协议]
+        有        OPP（Object Push Profile）：用于简单的文件传输。
+        有        FTP（File Transfer Profile ：用于更复杂的文件传输和管理。
+        有        PBAP（Phone Book Access Profile）：用于访问电话簿。
+        有        MAP（Message Access Profile）：用于访问移动设备中的短消息、电子邮件和其他个人信息管理数据。
+        有        HFP (Hands-Free Profile) ：用于将手机和车载蓝牙设备连接起来，支持电话通话、来电显示、挂断、接听等操作。
+        没有      SYNC（Synchronization Profile）：用于在设备之间同步联系人、日历等个人信息，支持增量同步和全量同步。
+        没有      BIP（Basic Imaging Profile）：用于在设备之间传输图像文件和元数据，例如摄像头拍摄的照片等。
+
+        [基于BNEP的协议]
+        有        PAN（Personal Area Networking Profile）：用于在多个蓝牙设备之间建立无线网络连接，实现数据共享和互联网接入等功能。
+
+        [基于AVDTP的协议]
+        没有      A2DP (Advanced Audio Distribution Profile)：该协议允许蓝牙设备进行高质量音频流传输，例如将音乐从手机发送到耳机或扬声器。
