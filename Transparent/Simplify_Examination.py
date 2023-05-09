@@ -53,8 +53,6 @@ def L2CAP_Upper_Layer(protocol):
         sock.connect((bdaddr, psm_dict[prot]))
         print(Fore.GREEN + f'{protocol}:{psm_dict[prot]}  Connect Success' + Fore.RESET)
         time.sleep(0.1)
-        pkt = b'\x17\x03\x0b\x00'
-        sock.send(pkt)
         sock.close()
     except Exception:
         print(Fore.RED + f'No {protocol} Protocol')
@@ -67,11 +65,14 @@ def OBEX_Upper_Layer(protocol):
     except Exception:
         print(Fore.RED + f'No {protocol} Protocol')
 
-prot = sys.argv[1]
-if prot in l2cap_list:
-    L2CAP_Upper_Layer(prot)
-elif prot in obex_list:
-    OBEX_Upper_Layer(prot)
-else:
-    print(f"所有协议名:\n\tL2CAP_Upper_Layer:{l2cap_list}\n\tOBEX_Upper_Layer:{obex_list}")
 
+try:
+    prot = sys.argv[1]
+    if prot in l2cap_list:
+        L2CAP_Upper_Layer(prot)
+    elif prot in obex_list:
+        OBEX_Upper_Layer(prot)
+    else:
+        print(f"所有协议名:\n\tL2CAP_Upper_Layer:{l2cap_list}\n\tOBEX_Upper_Layer:{obex_list}")
+except IndexError:
+    print(f"所有协议名:\n\tL2CAP_Upper_Layer:{l2cap_list}\n\tOBEX_Upper_Layer:{obex_list}")

@@ -1,21 +1,28 @@
 #!/usr/bin/python3
 # -*- encoding: utf-8 -*-
 import socket
+import bluetooth
 
-# 设定远程设备地址和端口号
 address = '22:22:D0:94:43:00'
-port = 17
+# 定义目标设备的MAC地址和端口号
+target_address = '22:22:D0:94:43:00'
+port = 1
 
-# 建立socket连接
-sock = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_L2CAP)
-sock.connect((address, port))
+# 尝试连接
+sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+try:
+    sock.connect((target_address, port))
+except bluetooth.btcommon.BluetoothError as err:
+    print('Connection error: ', err)
+    sock.close()
+    # 处理连接错误
 
 # 发送数据
-data = b'\x17\x03\x0b\x00'
-sock.send(data)
+sock.send('Hello, world!')
 
 # 接收数据
-response = sock.recv(1024)
+data = sock.recv(1024)
+print('Received:', data)
 
 # 关闭连接
 sock.close()

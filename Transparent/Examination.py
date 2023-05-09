@@ -244,6 +244,7 @@ def opush_test(prot):
         print(Fore.RED + 'No OPUSH Protocol')
 
 
+
 if sys.argv[1] == 'SDP':
     sdp_test(sdp_psm)
 elif sys.argv[1] == 'RFCOMM':
