@@ -30,3 +30,17 @@ psm     有/没有
 
         [基于AVDTP的协议]
         没有      A2DP (Advanced Audio Distribution Profile)：该协议允许蓝牙设备进行高质量音频流传输，例如将音乐从手机发送到耳机或扬声器。
+
+
+
+
+HID协议Transaction Type参数列表
+0x00    HANDSHAKE：用于表示握手阶段，发送方会将具体的数据内容发送给接收方，接收方则确认已经正确地接收到了该数据。
+0x01    CONTROL：用于执行控制命令和查询设备状态等操作。
+0x04    Get_Report：用于请求接收设备发送输入报告或输出报告。
+0x05    Set_Report：用于向接收设备发送输入报告或输出报告。
+0x06    Get_Protocol：用于查询接收设备的协议模式（Boot Protocol或Report Protocol）。
+0x07    Set_Protocol：用于将接收设备设置为特定的协议模式。
+0x08    Get_Idle：用于查询接收设备空闲时间。
+0x09    Set_Idle：用于设置接收设备的空闲时间。
+0x0a    Data：用于发送数据到接收设备。
