@@ -15,7 +15,7 @@ psm     有/没有
         有        OBEX (Object Exchange Protocol)：用于在蓝牙设备之间传输对象，例如照片、音乐文件等。
         找到待做   SPP (Serial Port Profile)：该协议允许两个蓝牙设备之间建立一个虚拟的串行端口连接，使得应用程序能够通过该连接发送和接收数据。
         没有      DUN (Dial-up Networking Profile)：该协议允许将蓝牙设备作为一个拨号客户端或服务器来使用，从而实现通过蓝牙网络进行拨号上网的功能。
-        找到待做   HSP (Headset Profile)：该协议是HFP的一个简化版本，用于实现基本的蓝牙耳机功能。
+        有        HSP (Headset Profile)：该协议是HFP的一个简化版本，用于实现基本的蓝牙耳机功能。
 
         [基于OBEX的协议]
         有        OPP（Object Push Profile）：用于简单的文件传输。
