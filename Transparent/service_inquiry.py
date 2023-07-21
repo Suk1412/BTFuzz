@@ -27,6 +27,11 @@ class Protocol_Monitor():
             }
         self.protocol_exist()
 
+    def service_scan(self):
+        services = bluetooth.find_service(address=self.target)
+        for ser in services:
+            print(ser)
+
     def service_check(self, uuid='0100'):
         uuid_128 = f'0000{uuid}-0000-1000-8000-00805F9B34FB'
         services = bluetooth.find_service(address=self.target, uuid=uuid_128)
@@ -61,8 +66,11 @@ class Protocol_Monitor():
 HUAWEItest = '14:A3:2F:C5:3B:63'
 # Cartest = '00:87:61:10:55:28'
 # IQOOtest2 = '22:22:15:8a:65:4a'
+foo = '74:74:46:CD:7E:50'
 
 IQOOtest = '22:22:c5:21:d5:b3'
 Prol = Protocol_Monitor(target=HUAWEItest)
 print(Prol.service_port)
-print(Prol.exists_service)
+# print(Prol.exists_service)
+
+# Prol.service_scan()
